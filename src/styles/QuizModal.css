@@ -1,0 +1,207 @@
+/* src/styles/QuizModal.css */
+
+.quiz-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.quiz-modal {
+  background: linear-gradient(145deg, #1c1c35, #252545);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 32px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ─── Header ─────────────────────────────── */
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quiz-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6c63ff;
+}
+
+.quiz-category {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  border-radius: 99px;
+}
+
+/* ─── Soru ───────────────────────────────── */
+
+.quiz-question {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Şıklar ─────────────────────────────── */
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.quiz-option:hover:not(:disabled) {
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.4);
+}
+
+.quiz-option--selected {
+  background: rgba(108, 99, 255, 0.2);
+  border-color: #6c63ff;
+}
+
+.quiz-option--correct {
+  background: rgba(72, 207, 173, 0.15) !important;
+  border-color: #48cfad !important;
+  color: #48cfad !important;
+}
+
+.quiz-option--wrong {
+  background: rgba(255, 107, 107, 0.15) !important;
+  border-color: #ff6b6b !important;
+  color: #ff6b6b !important;
+}
+
+.option-letter {
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-icon {
+  font-size: 16px;
+  margin-left: auto;
+}
+
+/* ─── Feedback ───────────────────────────── */
+
+.quiz-feedback {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  animation: fadeIn 0.2s ease;
+}
+
+.quiz-feedback.correct {
+  background: rgba(72, 207, 173, 0.1);
+  border: 1px solid rgba(72, 207, 173, 0.3);
+}
+
+.quiz-feedback.wrong {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.feedback-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.feedback-content strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.feedback-content p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.feedback-reward {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #48cfad;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Devam Butonu ───────────────────────── */
+
+.quiz-next-btn {
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #6c63ff, #48cfad);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.quiz-next-btn:hover {
+  opacity: 0.9;
+}
+
+.quiz-next-btn:active {
+  transform: scale(0.98);
+}
