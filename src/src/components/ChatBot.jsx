@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import './ChatBot.css';
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
 function buildSystemPrompt(playerData) {
   const { persona, wallet, knowledge, bes, happiness, xp, level, monthly, grandTotal } = playerData;
@@ -24,20 +25,22 @@ Kurallar:
 - Rakamları somut örneklerle açıkla`;
 }
 
-async function callClaude(messages, systemPrompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+// Gemini için mesaj geçmişini dönüştür (user/assistant → user/model)
+function toGeminiContents(messages) {
+  return messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+}
+
+async function callGemini(messages, systemPrompt) {
+  const res = await fetch(GEMINI_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 200,
-      system: systemPrompt,
-      messages,
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: toGeminiContents(messages),
+      generationConfig: { maxOutputTokens: 200, temperature: 0.7 },
     }),
   });
 
@@ -47,7 +50,7 @@ async function callClaude(messages, systemPrompt) {
   }
 
   const data = await res.json();
-  return data.content[0].text;
+  return data.candidates[0].content.parts[0].text;
 }
 
 export default function ChatBot({ playerData }) {
@@ -82,7 +85,7 @@ export default function ChatBot({ playerData }) {
     setError(null);
 
     try {
-      const reply = await callClaude(newMessages, systemPrompt);
+      const reply = await callGemini(newMessages, systemPrompt);
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (err) {
       setError(err.message);
@@ -95,7 +98,7 @@ export default function ChatBot({ playerData }) {
     return (
       <div className="chatbot-no-key">
         <span>🤖</span>
-        <small>VITE_ANTHROPIC_API_KEY tanımlı değil</small>
+        <small>VITE_GEMINI_API_KEY tanımlı değil</small>
       </div>
     );
   }
@@ -111,7 +114,7 @@ export default function ChatBot({ playerData }) {
         <div className="chatbot-panel">
           <div className="chatbot-header">
             <span>🤖 AgeSA Finansal Koç</span>
-            <span className="chatbot-model">Haiku AI</span>
+            <span className="chatbot-model">Gemini AI</span>
           </div>
 
           <div className="chatbot-messages">
