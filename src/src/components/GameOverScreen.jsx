@@ -7,6 +7,7 @@ import {
   buildLeaderboard,
   PERSONAS,
 } from '../../../data';
+import ChatBot from './ChatBot';
 import './GameOverScreen.css';
 
 // ─── Stat bar satırı ──────────────────────────────────────────────
@@ -135,6 +136,19 @@ export default function GameOverScreen() {
             ))}
           </div>
         </section>
+
+        {/* ─── 4. AI KOÇU ───────────────────────────────────── */}
+        <ChatBot playerData={{
+          persona:    persona?.label ?? personaId,
+          wallet:     stats.wallet,
+          knowledge:  stats.knowledge,
+          bes:        stats.bes,
+          happiness:  stats.happiness,
+          xp:         state.xp,
+          level:      state.level,
+          monthly,
+          grandTotal: besResult.grandTotal,
+        }} />
 
       </div>
     </div>
