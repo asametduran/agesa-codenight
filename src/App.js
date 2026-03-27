@@ -1,23 +1,28 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import StartScreen from './StartScreen';
+import PersonaScreen from './PersonaScreen';
+import GameScreen from './GameScreen';
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState('start');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      {/* 1. EKRAN: BAŞLANGIÇ */}
+      {currentScreen === 'start' && (
+        <StartScreen onStart={() => setCurrentScreen('persona')} />
+      )}
+      
+      {/* 2. EKRAN: PERSONA SEÇİMİ */}
+      {currentScreen === 'persona' && (
+        <PersonaScreen onSelect={() => setCurrentScreen('game')} />
+      )}
+
+      {/* 3. EKRAN: OYUN */}
+      {currentScreen === 'game' && (
+        <GameScreen />
+      )}
     </div>
   );
 }
