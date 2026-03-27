@@ -6,6 +6,10 @@ function StartScreen({ onStart }) {
       <div className="start-content">
         <h1 className="logo">AgeSA</h1>
         <div className="subtitle">CODENIGHT</div>
+        <div className="project-name">
+          <span className="project-name-best">BES-t</span>
+          <span className="project-name-choice"> Choice</span>
+        </div>
         <h2 className="main-title">Finansal Özgürlük<br />Yolculuğuna Hoş Geldin!</h2>
         <button className="start-btn" onClick={onStart}>
           HADİ BAŞLAYALIM!
