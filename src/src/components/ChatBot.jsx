@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import './ChatBot.css';
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${API_KEY}`;
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL   = 'llama-3.1-8b-instant';
 
 function buildSystemPrompt(playerData) {
   const { persona, wallet, knowledge, bes, happiness, xp, level, monthly, grandTotal } = playerData;
@@ -25,22 +26,21 @@ Kurallar:
 - Rakamları somut örneklerle açıkla`;
 }
 
-// Gemini için mesaj geçmişini dönüştür (user/assistant → user/model)
-function toGeminiContents(messages) {
-  return messages.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }],
-  }));
-}
-
-async function callGemini(messages, systemPrompt) {
-  const res = await fetch(GEMINI_URL, {
+async function callGroq(messages, systemPrompt) {
+  const res = await fetch(GROQ_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`,
+    },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: toGeminiContents(messages),
-      generationConfig: { maxOutputTokens: 200, temperature: 0.7 },
+      model: MODEL,
+      max_tokens: 200,
+      temperature: 0.7,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages.map(m => ({ role: m.role, content: m.content })),
+      ],
     }),
   });
 
@@ -50,7 +50,7 @@ async function callGemini(messages, systemPrompt) {
   }
 
   const data = await res.json();
-  return data.candidates[0].content.parts[0].text;
+  return data.choices[0].message.content;
 }
 
 export default function ChatBot({ playerData }) {
@@ -85,7 +85,7 @@ export default function ChatBot({ playerData }) {
     setError(null);
 
     try {
-      const reply = await callGemini(newMessages, systemPrompt);
+      const reply = await callGroq(newMessages, systemPrompt);
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (err) {
       setError(err.message);
@@ -98,7 +98,7 @@ export default function ChatBot({ playerData }) {
     return (
       <div className="chatbot-no-key">
         <span>🤖</span>
-        <small>VITE_GEMINI_API_KEY tanımlı değil</small>
+        <small>VITE_GROQ_API_KEY tanımlı değil</small>
       </div>
     );
   }
@@ -114,7 +114,7 @@ export default function ChatBot({ playerData }) {
         <div className="chatbot-panel">
           <div className="chatbot-header">
             <span>🤖 AgeSA Finansal Koç</span>
-            <span className="chatbot-model">Gemini Lite</span>
+            <span className="chatbot-model">Groq AI</span>
           </div>
 
           <div className="chatbot-messages">
