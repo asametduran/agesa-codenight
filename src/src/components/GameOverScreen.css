@@ -1,0 +1,307 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap');
+
+/* ─── Overlay ────────────────────────────────────────────────────── */
+.go-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background: rgba(2, 11, 24, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+/* ─── Sayfa (aşağıdan yukarı kayar) ─────────────────────────────── */
+.go-sheet {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  max-height: 92vh;
+  border-radius: 36px 36px 0 0;
+  padding: 28px 20px 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: #1e293b;
+  font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
+  animation: goSlideUp 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes goSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+/* ─── Başlık ─────────────────────────────────────────────────────── */
+.go-heading {
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.go-persona-tag {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  margin: -8px 0 0;
+}
+
+/* ─── Bölümler ───────────────────────────────────────────────────── */
+.go-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 16px 14px;
+}
+
+.go-section-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+/* ─── Stat barlar ────────────────────────────────────────────────── */
+.go-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.go-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  width: 58px;
+  flex-shrink: 0;
+}
+
+.go-stat-track {
+  flex: 1;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.go-stat-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease-out;
+  box-shadow: 0 0 8px rgba(164, 211, 46, 0.5);
+}
+
+.go-stat-value {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  width: 28px;
+  text-align: right;
+}
+
+.go-xp-badge {
+  display: flex;
+  justify-content: space-between;
+  background: #0f172a;
+  color: white;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+/* ─── BES parametreleri ──────────────────────────────────────────── */
+.go-bes-params {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.go-bes-param {
+  background: white;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1.5px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.go-bes-param-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.go-bes-param-val {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* ─── BES çubuk grafiği ──────────────────────────────────────────── */
+.go-bes-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 100px;
+  border-bottom: 2px solid #cbd5e1;
+  border-left: 2px solid #cbd5e1;
+  padding: 0 4px 0;
+  margin: 4px 0 8px;
+  gap: 4px;
+}
+
+.go-bes-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  flex: 1;
+  gap: 4px;
+}
+
+.go-bes-bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(to top, #65a30d, #bef264);
+  box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+  transition: height 0.6s ease-out;
+}
+
+.go-bes-bar-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+/* ─── Insight kutusu ─────────────────────────────────────────────── */
+.go-insight-box {
+  border: 2px dashed #94a3b8;
+  border-radius: 16px;
+  padding: 24px 14px 14px;
+  position: relative;
+  text-align: center;
+}
+
+.go-sparkles {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  background: #f8fafc;
+  padding: 0 10px;
+  line-height: 1;
+}
+
+.go-insight-box p {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.go-amount {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0f172a;
+  background: white;
+  border-radius: 40px;
+  padding: 8px 20px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 8px;
+}
+
+.go-amount::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 44px;
+  background: linear-gradient(90deg, #a3e635, #fb923c);
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0.65;
+}
+
+.go-amount::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 40px;
+  background: white;
+  z-index: -1;
+}
+
+.go-gov-note {
+  font-size: 0.7rem !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+/* ─── Leaderboard ────────────────────────────────────────────────── */
+.go-board {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.go-board-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.go-board-row.you {
+  border-color: #a4d32e;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 2px rgba(164, 211, 46, 0.3);
+}
+
+.go-board-rank {
+  font-size: 1rem;
+  width: 28px;
+  text-align: center;
+}
+
+.go-board-name {
+  font-weight: 800;
+  color: #0f172a;
+  flex: 1;
+}
+
+.go-board-persona {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.go-board-xp {
+  font-weight: 800;
+  color: #a4d32e;
+  font-size: 0.82rem;
+}

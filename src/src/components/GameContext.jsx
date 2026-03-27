@@ -1,9 +1,10 @@
 import { createContext, useReducer, useEffect } from "react";
 
-const STATE_VERSION = 2; // localStorage yapısı değişince artır → otomatik sıfırlanır
+const STATE_VERSION = 3;
 
 const INITIAL_STATE = {
   _version: STATE_VERSION,
+  persona: null,  // seçilen persona id (P1–P5)
   xp: 0,
   level: 1,
   stats: {
@@ -33,6 +34,9 @@ function gameReducer(state, action) {
     case "ADD_XP": {
       const newXP = state.xp + action.payload;
       return { ...state, xp: newXP, level: getLevel(newXP) };
+    }
+    case "SET_PERSONA": {
+      return { ...state, persona: action.payload };
     }
     case "UPDATE_STATS": {
       const e = action.payload;
