@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import './ChatBot.css';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${API_KEY}`;
 
 function buildSystemPrompt(playerData) {
   const { persona, wallet, knowledge, bes, happiness, xp, level, monthly, grandTotal } = playerData;
@@ -114,7 +114,7 @@ export default function ChatBot({ playerData }) {
         <div className="chatbot-panel">
           <div className="chatbot-header">
             <span>🤖 AgeSA Finansal Koç</span>
-            <span className="chatbot-model">Gemini 1.5</span>
+            <span className="chatbot-model">Gemini Lite</span>
           </div>
 
           <div className="chatbot-messages">
