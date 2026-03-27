@@ -1,70 +1,233 @@
-# Getting Started with Create React App
+# agesacodenight
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Finansal okuryazarlık odaklı React uygulaması.
 
-## Available Scripts
+Bu repoda **UI/Component katmanları** ile **veri katmanı** ayrıdır.  
+**CSV kaynaklarından üretilen tek kanonik veri çıktısı `src/data/data.js` olmalıdır.**
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Kurulum / Çalıştırma
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm install
+npm start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Test:
 
-### `npm test`
+```bash
+npm test
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Build:
 
-### `npm run build`
+```bash
+npm run build
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Veri Katmanı (data-insight sorumluluğu)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+> Bu bölüm: `data-insight` branch yaklaşımını ve “tek doğruluk kaynağı” kuralını tarif eder.  
+> UI geliştirenler **CSV dosyalarıyla uğraşmaz**, sadece `src/data/data.js` içinden import eder.
 
-### `npm run eject`
+### Tek çıktı / tek sorumluluk
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **Tek çıktı dosyası:** `src/data/data.js`
+- Veri şeması burada sabittir:
+  - **Export isimlerini değiştirme**
+  - **Objelerin alanlarını (schema) değiştirme**
+  - Gerekirse önce ekip ile konuşulmalı
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Ham veri kaynakları (CSV)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Repoda CSV’ler şu dizinde tutulur:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/data/
+  users.csv
+  spendings.csv
+  quiz_questions.csv
+  quiz_options.csv
+  bes_scenarios.csv
+  bes_funds_performance.csv
+  learning_contents.csv
+```
 
-## Learn More
+> Not: Bazı dokümanlarda `public/raw/*` geçebilir; bu repo düzeninde CSV’ler `src/data/*` altındadır.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## `src/data/data.js` Export’ları (Kanonik API)
 
-### Code Splitting
+Aşağıdaki export’lar uygulamanın diğer katmanları tarafından import edilir.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### `PERSONAS` — object, key = `P1..P5`
 
-### Analyzing the Bundle Size
+```js
+PERSONAS.P1 = {
+  id, label, description, ageRange, isStudent,
+  incomeLevel, riskProfile, impulseTendency, subscriptionCount,
+  initialStats: { health, savings, impulse, subscriptions }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- `initialStats` → GameContext başlangıç state’i buradan gelir
+- `health`: 0–100
+- `savings`: 0–100 (normalize)
+- `impulse`: 1/2/3
 
-### Making a Progressive Web App
+Kaynak mantığı:
+- `users.csv` içindeki `persona_id` grupları → her grup ortalanır
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Referans persona özetleri:
 
-### Advanced Configuration
+| Persona | Kimlik              | health | savings | impulse | risk   |
+|---------|---------------------|--------|---------|---------|--------|
+| P1      | Tutumlu Öğrenci     | 71     | 65      | 1 (low) | low    |
+| P2      | Harcayan Öğrenci    | 61     | 41      | 3 (high)| medium |
+| P3      | Risk Alan Genç      | 78     | 59      | 2 (mid) | high   |
+| P4      | Çalışan Profesyonel | 91     | 81      | 1 (low) | medium |
+| P5      | Kısıtlı Öğrenci     | 52     | 53      | 2 (mid) | low    |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+### `QUIZ_QUESTIONS` — array
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```js
+{
+  id, moduleId, stageId,
+  difficulty,   // 1 / 2 / 3
+  xp,           // 10 / 20 / 30
+  question,
+  options,      // string[]
+  correctIndex, // options[correctIndex] doğru cevap
+  feedbackCorrect,
+  feedbackWrong,
+}
+```
 
-### `npm run build` fails to minify
+Kaynak mantığı:
+- `quiz_questions.csv` + `quiz_options.csv` birleştirilir
+- `correct_option_id` → `option_order` ile eşleştirilip `correctIndex` üretilir
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Modül → Stage eşlemesi:
+
+```
+M1 → stageId: 1   (Bütçe Temelleri)
+M2 → stageId: 2   (Harcama Davranışı)
+M3 → stageId: 3   (Birikim)
+M4 → stageId: 4   (Enflasyon ve Faiz)
+M5 → stageId: 5   (BES)
+```
+
+#### `getQuizByStage(stageId)`
+
+```js
+import { getQuizByStage } from '../data/data.js'
+
+const stage1Questions = getQuizByStage(1) // 10 soru döner
+```
+
+---
+
+### `BES_SCENARIOS` — array (3 eleman)
+
+```js
+{
+  id, riskProfile, label, description,
+  fundCount,
+  annualReturnMin, annualReturnAvg, annualReturnMax,
+}
+```
+
+Kaynak:
+- `bes_scenarios.csv` — direkt kopyalanır (dönüşüm yok)
+
+#### `getScenarioByPersona(personaId)`
+
+```js
+getScenarioByPersona("P1") // → SCN_LOW (P1 risk=low)
+getScenarioByPersona("P3") // → SCN_HIGH (P3 risk=high)
+```
+
+---
+
+### `calculateBES(monthlyPMT, years, annualReturn)`
+
+```js
+import { calculateBES } from '../data/data.js'
+
+const result = calculateBES(
+  500,    // aylık katkı (TL)
+  30,     // yıl
+  43.85   // yıllık getiri oranı (BES_SCENARIOS'tan)
+)
+
+result.chartData     // Recharts LineChart — [{ year, birikim, devletKatkisi, toplam }]
+result.totalSavings  // sayı (TL)
+result.govContrib    // sayı — toplam ödemenin %20'si
+result.grandTotal    // totalSavings + govContrib
+```
+
+Formül:
+
+```
+r = annualReturn / 100 / 12
+n = years * 12
+FV = monthlyPMT × ((1+r)^n - 1) / r
+govContrib = (monthlyPMT × n) × 0.20
+```
+
+---
+
+### `LEADERBOARD_USERS` — array (5 eleman)
+
+```js
+{ userId, name, persona, xp, level }
+// userId: "YOU" olanın xp ve level'ı null — GameContext'ten enjekte edilir
+```
+
+#### `buildLeaderboard(currentXP, currentLevel)`
+
+```js
+import { buildLeaderboard } from '../data/data.js'
+
+const sorted = buildLeaderboard(state.xp, state.level)
+// Aktif kullanıcıyı yerleştirir + XP'ye göre sıralar
+```
+
+---
+
+### `SPENDING_CATEGORIES` — array
+
+```js
+{ id, label, icon, essentialRatio }
+// essentialRatio: 0–1, ne kadar zorunlu harcama olduğu
+// Karar kartı senaryolarında kullanılır
+```
+
+Kaynak mantığı:
+- `spendings.csv` kategori analizi (Market, Ulaşım, Yeme-İçme, Eğlence, Abonelik, Alışveriş, Oyun/İçerik, Diğer)
+
+---
+
+## Data-Insight TODO / Kontrol Listesi
+
+- [ ] Quiz: `quiz_questions.csv` + `quiz_options.csv` parse edilip `QUIZ_QUESTIONS` (50 soru) üretilmeli
+- [ ] Leaderboard: `users.csv` içinden `financial_health_score` yüksek 4 kullanıcı seçilip `LEADERBOARD_USERS` güncellenmeli
+- [ ] Test: `calculateBES(500, 30, 43.85)` sonuçları kontrol edilmeli
+- [ ] Test: `getQuizByStage(1)` → 10 soru dönmeli
+- [ ] Test: `getScenarioByPersona("P2")` → `SCN_MEDIUM` dönmeli
+
+---
+
+## Katkı / Çalışma Prensibi
+
+- CSV dosyalarıyla ilgili tüm dönüşümler **yalnızca veri katmanında** yapılır.
+- UI tarafı:
+  - CSV okuma/parsing yapmaz
+  - `src/data/data.js` dışına “schema kopyalama” yapmaz
+- Şema değişikliği gerekiyorsa önce ekip ile anlaşılır, sonra `data.js` güncellenir.
